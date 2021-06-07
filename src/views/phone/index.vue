@@ -21,11 +21,11 @@
                 </form>
                 <table class="table  table-hover table-bordered" >
                     <tr>
-                        <th v-for='item in phoneList' :key="item">
+                        <th v-for='(item, index) in phoneList' :key="index">
                             {{item}}
                         </th>
                     </tr>
-                    <tr v-for='item in currentList' :key="item">
+                    <tr v-for='(item, index) in currentList' :key="index">
                         <td>{{item.model}}</td>
                         <td>{{item.Android_version}}</td>
                         <td>{{item.Vendor_version}}</td>
