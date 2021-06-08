@@ -37,7 +37,7 @@
             <td>{{item.Vendor_version}}</td>
             <td>{{item.isRoot}}</td>
             <td>
-              <el-button type="primary" @click="handleToDetail(item.id)">查看详情</el-button>
+              <button type="primary" @click="handleToDetail(item.id, item.model)">查看详情</button>
             </td>
           </tr>
         </table>
@@ -382,8 +382,15 @@ export default {
       let ln = this.listName;
       this.currentList = this[ln];
     },
-    handleToDetail(id) {
-      this.$router.push("/detail/" + id);
+    handleToDetail(id, model) {
+      console.log(this.brandName)
+      this.$router.push({
+        path:"/detail/" + id,
+        query: {
+          brandName: this.brandName,
+          model: model
+        }
+      });
     }
   }
 };
