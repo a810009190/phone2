@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import PhoneRouter from '../views/phone'
 import DetailRouter from '../views/detail'
 import SearchRouter from '../views/search'
-
+import ModifyRouter from '../views/modify'
 
 Vue.use(Router)
 
@@ -25,6 +25,11 @@ export default new Router({
       path: '/search',
       name: 'search',
       component: SearchRouter
-    }
+    },
+    {
+      path: '/modify',
+      name: 'modify',
+      component: ModifyRouter
+    },
   ]
 })
