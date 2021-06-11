@@ -1,9 +1,10 @@
 <template>
   <el-container>
-    <el-header height="45px">
-      <h2>{{name}}详情页</h2>
-    </el-header>
-    <el-container>
+    <div class="panel">
+      <div class="header">
+        <h2>{{name}}详情页</h2>
+      </div>
+    </div>
       <el-aside width="150px">
         <el-row>
           <el-menu>
@@ -15,28 +16,30 @@
           </el-menu>
         </el-row>
       </el-aside>
-      <el-main>
         <div class="navBar">
           <ul class="headMenu">
-            <li v-for="(item,index) in ctaskList" :key="index" @click="changeTask(item)">
-              {{item | toDisplay}}
-            </li>
+            <li
+              v-for="(item,index) in ctaskList"
+              :key="index"
+              @click="changeTask(item)"
+            >{{item | toDisplay}}</li>
           </ul>
         </div>
-        <el-table
-          :data="currentList"
-          border
-          style="width: 50%"
-          :header-cell-style="{textAlign: 'center'}"
-          :cell-style="{textAlign: 'center'}"
-        >
-          <el-table-column prop="displayName" label="提取项目" width="427.5"></el-table-column>
-          <el-table-column prop="isSuccess" label="提取情况" width="427.5">
-            <template slot-scope="scope">{{scope.row.isSuccess | toChinese}}</template>
-          </el-table-column>
-        </el-table>
-      </el-main>
-    </el-container>
+        <table class="tbe">
+          <tr>
+            <th>提取项目</th>
+            <th>提取情况</th>
+          </tr>
+          <tr v-for="(item,index) in currentList" :key="index">
+            <td>
+              {{item.displayName}}
+            </td>
+            <td>
+              {{item.isSuccess | toChinese}}
+            </td>
+          </tr>
+        </table>
+
     <!-- <el-footer height="30px">&copy;wy 2021</el-footer> -->
   </el-container>
 </template>
@@ -46,9 +49,9 @@ export default {
   name: "detail",
   data() {
     return {
-      name:"",
-      alldata:{},
-      getdata:{},
+      name: "",
+      alldata: {},
+      getdata: {},
       trIndex: 0,
       currentList: [],
       ctaskList: [],
@@ -66,25 +69,47 @@ export default {
         "其他工具"
       ],
       brandTask: {
-        huawei: ["androidIntelligent", "androidhuaweiclone", "androidhuaweiexchange", "androidselfbackup", "androidextra"],
+        huawei: [
+          "androidIntelligent",
+          "androidhuaweiclone",
+          "androidhuaweiexchange",
+          "androidselfbackup",
+          "androidextra"
+        ],
         vivo: ["androidIntelligent", "androidvivoexchange", "androidextra"],
-        xiaomi: ["androidIntelligent", "androidxiaomiexchange", "androidselfbackup", "androidextra"],
-        oppo: ["androidIntelligent", "androidoppoexchange", "androidselfbackup", "androidextra"],
+        xiaomi: [
+          "androidIntelligent",
+          "androidxiaomiexchange",
+          "androidselfbackup",
+          "androidextra"
+        ],
+        oppo: [
+          "androidIntelligent",
+          "androidoppoexchange",
+          "androidselfbackup",
+          "androidextra"
+        ],
         google: ["androidIntelligent", "androidextra"],
         nokia: ["androidIntelligent", "androidextra"],
         meizu: ["androidIntelligent", "androidselfbackup", "androidextra"],
-        samsung: ["androidIntelligent", "androidsamsungexchange", "androidextra"]
+        samsung: [
+          "androidIntelligent",
+          "androidsamsungexchange",
+          "androidextra"
+        ]
       }
     };
   },
   mounted() {
-    this.name = this.$route.query.model
-    this.ctaskList=this.brandTask[this.$route.query.brandName];
-    this.$axios.get('/data/huawei/'+this.$route.params.id+'.json').then((res)=>{
-      this.getdata = res.data.androidIntelligent;
-      this.alldata = res.data;
-      this.currentList = this.getdata.basicList;
-    })
+    this.name = this.$route.query.model;
+    this.ctaskList = this.brandTask[this.$route.query.brandName];
+    this.$axios
+      .get("/data/huawei/" + this.$route.params.id + ".json")
+      .then(res => {
+        this.getdata = res.data.androidIntelligent;
+        this.alldata = res.data;
+        this.currentList = this.getdata.basicList;
+      });
   },
   methods: {
     // 根据索引展示指定项
@@ -94,28 +119,28 @@ export default {
         console.log(this.currentList);
       } else if (index == 1) {
         this.currentList = this.getdata.broswerList;
-      }else if (index == 2) {
+      } else if (index == 2) {
         this.currentList = this.getdata.imList;
-      }else if (index == 3) {
+      } else if (index == 3) {
         this.currentList = this.getdata.intlimList;
-      }else if (index == 4) {
+      } else if (index == 4) {
         this.currentList = this.getdata.mailList;
-      }else if (index == 5) {
+      } else if (index == 5) {
         this.currentList = this.getdata.clouddistList;
-      }else if (index == 6) {
+      } else if (index == 6) {
         this.currentList = this.getdata.videoList;
-      }else if (index == 7) {
+      } else if (index == 7) {
         this.currentList = this.getdata.workerList;
-      }else if (index == 8) {
+      } else if (index == 8) {
         this.currentList = this.getdata.geoList;
-      }else if (index == 9) {
+      } else if (index == 9) {
         this.currentList = this.getdata.ecommerceList;
-      }else{
+      } else {
         this.currentList = this.getdata.toolsList;
       }
     },
     // 根据所选任务改变任务项
-    changeTask(item){
+    changeTask(item) {
       this.getdata = this.alldata[item];
     }
   },
@@ -126,34 +151,34 @@ export default {
         return "成功";
       } else if (msg == false) {
         return "失败";
-      } else{
+      } else {
         return "未知";
       }
     },
     // 任务名字过滤为中文
-    toDisplay(msg){
-      if(msg == "androidIntelligent"){
-        return "智能提取"
-      }else if (msg == "androidhuaweiclone"){
-        return "华为克隆"
-      }else if (msg == "androidhuaweiexchange"){
-        return "华为高级备份"
-      }else if (msg == "androidselfbackup"){
-        return "自带备份"
-      }else if (msg == "androidextra"){
-        return "数据提取"
-      }else if (msg == "androidvivoexchange"){
-        return "VIVO互传"
-      }else if (msg == "androidxiaomiexchange"){
-        return "小米高级备份"
-      }else if (msg == "androidoppoexchange"){
-        return "OPPO高级备份"
-      }else if (msg == "androidsamsungexchange"){
-        return "三星高级备份"
+    toDisplay(msg) {
+      if (msg == "androidIntelligent") {
+        return "智能提取";
+      } else if (msg == "androidhuaweiclone") {
+        return "华为克隆";
+      } else if (msg == "androidhuaweiexchange") {
+        return "华为高级备份";
+      } else if (msg == "androidselfbackup") {
+        return "自带备份";
+      } else if (msg == "androidextra") {
+        return "数据提取";
+      } else if (msg == "androidvivoexchange") {
+        return "VIVO互传";
+      } else if (msg == "androidxiaomiexchange") {
+        return "小米高级备份";
+      } else if (msg == "androidoppoexchange") {
+        return "OPPO高级备份";
+      } else if (msg == "androidsamsungexchange") {
+        return "三星高级备份";
       }
     }
   }
-}
+};
 </script>
 
 <style>
@@ -161,6 +186,8 @@ export default {
   background-color: #409eff;
   color: white;
   text-align: center;
+  height: 45px;
+  width: 80%;
 }
 .el-aside {
   margin-top: 10px;

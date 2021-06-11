@@ -1,8 +1,8 @@
 <template>
   <div id="box">
     <div class="container">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
+      <div class="panel">
+        <div class="header">
           <h3 style="text-align: center;">手机支持情况统计</h3>
         </div>
         <form>
@@ -20,14 +20,9 @@
             <option value="meizuList">魅族</option>
             <option value="samsungList">三星</option>
           </select>
-          <Button
-            type="button"
-            class="btn btn-primary"
-            style="width:99%"
-            @click="tolName()"
-          >查看该品牌手机情况</Button>
+          <Button class="button" type="button" style="width:99%" @click="tolName()">查看该品牌手机情况</Button>
         </form>
-        <table class="table table-hover table-bordered">
+        <table class="tbe">
           <tr>
             <th v-for="(item, index) in phoneList" :key="index">{{item}}</th>
           </tr>
@@ -37,10 +32,10 @@
             <td>{{item.Vendor_version}}</td>
             <td>{{item.isRoot}}</td>
             <td>
-              <button type="primary" @click="handleToDetail(item.id, item.model)">查看详情</button>
+              <button class="nbutton" type="button" @click="handleToDetail(item.id, item.model)">查看详情</button>
             </td>
             <td>
-              <button type="primary" @click="handleToModify(item.id, item.model)">更新数据</button>
+              <button class="nbutton" type="button" @click="handleToModify(item.id, item.model)">更新数据</button>
             </td>
           </tr>
         </table>
@@ -110,3 +105,96 @@ export default {
   }
 };
 </script>
+<style>
+.panel {
+  border: 1px solid #337ab7;
+  border-radius: 5px;
+  height: 100%;
+  text-align: center;
+}
+.header {
+  background: #337ab7;
+  height: 80px;
+  color: white;
+  text-align: center;
+}
+.btn {
+  margin: 5px 5px 8px 5px !important;
+  padding: 6px 12px;
+  background: #337ab7;
+  color: white;
+}
+table {
+  border-collapse: collapse;
+  margin: 0 auto;
+  text-align: center;
+  width: 100%;
+}
+table td,
+table th {
+  padding: 8px;
+  border: 1px solid #e6eaec;
+  color: #666;
+  line-height: 40px;
+}
+table thead th {
+  background-color: #e6eaec;
+  width: 100px;
+}
+table tr {
+  padding: 5px;
+  background: #fff;
+}
+
+table tr:hover {
+  background: #dbdedf;
+}
+
+.button {
+  margin: 5px;
+  display: inline-block;
+  padding: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #337ab7;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0 5px #999;
+}
+.button:hover {
+  background-color: #4b779c;
+}
+.button:active {
+  background-color: #3f74a3;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+.nbutton{
+  display: inline-block;
+  padding: 2px 15px;
+  font-size: 12px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #fff;
+  background-color: #337ab7;
+  border: none;
+  border-radius: 4px;
+}
+select{
+  margin: 6px;
+  appearance: normal;
+}
+select option{
+  text-align: center;
+}
+h3{
+  padding-top: 20px;
+}
+</style>
