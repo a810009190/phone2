@@ -22,23 +22,25 @@
           </select>
           <Button class="button" type="button" style="width:99%" @click="tolName()">查看该品牌手机情况</Button>
         </form>
-        <table class="tbe">
-          <tr>
-            <th v-for="(item, index) in phoneList" :key="index">{{item}}</th>
-          </tr>
-          <tr v-for="(item, index) in currentList" :key="index">
-            <td>{{item.model}}</td>
-            <td>{{item.Android_version}}</td>
-            <td>{{item.Vendor_version}}</td>
-            <td>{{item.isRoot}}</td>
-            <td>
-              <button class="nbutton" type="button" @click="handleToDetail(item.id, item.model)">查看详情</button>
-            </td>
-            <td>
-              <button class="nbutton" type="button" @click="handleToModify(item.id, item.model)">更新数据</button>
-            </td>
-          </tr>
-        </table>
+        <div class="fa">
+          <table class="tbe">
+            <tr>
+              <th v-for="(item, index) in phoneList" :key="index">{{item}}</th>
+            </tr>
+            <tr v-for="(item, index) in currentList" :key="index">
+              <td>{{item.model}}</td>
+              <td>{{item.Android_version}}</td>
+              <td>{{item.Vendor_version}}</td>
+              <td>{{item.isRoot}}</td>
+              <td>
+                <button class="nbutton" type="button" @click="handleToDetail(item.id, item.model)">查看详情</button>
+              </td>
+              <td>
+                <button class="nbutton" type="button" @click="handleToModify(item.id, item.model)">更新数据</button>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -54,7 +56,7 @@ export default {
   data() {
     return {
       alldata: {},
-      brandName: "",
+      brandName: "huaweiList",
       currentList: [],
       phoneList: [
         "手机型号",
@@ -124,6 +126,10 @@ export default {
   background: #337ab7;
   color: white;
 }
+.fa{
+  max-height: 800px;
+  overflow: hidden;
+}
 table {
   border-collapse: collapse;
   margin: 0 auto;
@@ -136,6 +142,8 @@ table th {
   border: 1px solid #e6eaec;
   color: #666;
   line-height: 40px;
+  width: 536px !important;
+  height: 68px !important;
 }
 table thead th {
   background-color: #e6eaec;

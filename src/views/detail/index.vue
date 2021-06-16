@@ -1,47 +1,39 @@
 <template>
-  <el-container>
-    <div class="panel">
-      <div class="header">
-        <h2>{{name}}详情页</h2>
-      </div>
-    </div>
-      <el-aside width="150px">
-        <el-row>
-          <el-menu>
-            <el-menu-item
-              v-for="(item,index) in taskList"
-              :key="index"
-              @click="changeIndex(index)"
-            >{{item}}</el-menu-item>
-          </el-menu>
-        </el-row>
-      </el-aside>
-        <div class="navBar">
-          <ul class="headMenu">
-            <li
-              v-for="(item,index) in ctaskList"
-              :key="index"
-              @click="changeTask(item)"
-            >{{item | toDisplay}}</li>
-          </ul>
+  <div>
+    <div class="container">
+      <div class="panel">
+        <div class="header">
+          <h2>{{name}}详情页</h2>
         </div>
+      </div>
+      <div class="navBar">
+        <ul class="headMenu">
+          <li
+            v-for="(item,index) in ctaskList"
+            :key="index"
+            @click="changeTask(item)"
+          >{{item | toDisplay}}</li>
+        </ul>
+      </div>
+      <div id="box">
+        <aside>
+          <ul>
+            <li v-for="(item,index) in taskList" :key="index" @click="changeIndex(index)">{{item}}</li>
+          </ul>
+        </aside>
         <table class="tbe">
           <tr>
             <th>提取项目</th>
             <th>提取情况</th>
           </tr>
           <tr v-for="(item,index) in currentList" :key="index">
-            <td>
-              {{item.displayName}}
-            </td>
-            <td>
-              {{item.isSuccess | toChinese}}
-            </td>
+            <td>{{item.displayName}}</td>
+            <td>{{item.isSuccess | toChinese}}</td>
           </tr>
         </table>
-
-    <!-- <el-footer height="30px">&copy;wy 2021</el-footer> -->
-  </el-container>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -69,30 +61,30 @@ export default {
         "其他工具"
       ],
       brandTask: {
-        huawei: [
+        huaweiList: [
           "androidIntelligent",
           "androidhuaweiclone",
           "androidhuaweiexchange",
           "androidselfbackup",
           "androidextra"
         ],
-        vivo: ["androidIntelligent", "androidvivoexchange", "androidextra"],
-        xiaomi: [
+        vivoList: ["androidIntelligent", "androidvivoexchange", "androidextra"],
+        xiaomiList: [
           "androidIntelligent",
           "androidxiaomiexchange",
           "androidselfbackup",
           "androidextra"
         ],
-        oppo: [
+        oppoList: [
           "androidIntelligent",
           "androidoppoexchange",
           "androidselfbackup",
           "androidextra"
         ],
-        google: ["androidIntelligent", "androidextra"],
-        nokia: ["androidIntelligent", "androidextra"],
-        meizu: ["androidIntelligent", "androidselfbackup", "androidextra"],
-        samsung: [
+        googleList: ["androidIntelligent", "androidextra"],
+        nokiaList: ["androidIntelligent", "androidextra"],
+        meizuList: ["androidIntelligent", "androidselfbackup", "androidextra"],
+        samsungList: [
           "androidIntelligent",
           "androidsamsungexchange",
           "androidextra"
@@ -103,6 +95,7 @@ export default {
   mounted() {
     this.name = this.$route.query.model;
     this.ctaskList = this.brandTask[this.$route.query.brandName];
+    console.log(this.$route.query.brandName);
     this.$axios
       .get("/data/huawei/" + this.$route.params.id + ".json")
       .then(res => {
@@ -182,7 +175,7 @@ export default {
 </script>
 
 <style>
-.el-header {
+/* .el-header {
   background-color: #409eff;
   color: white;
   text-align: center;
@@ -216,7 +209,7 @@ export default {
   margin: auto;
   max-height: 600px;
   overflow: auto !important;
-}
+} */
 .headMenu {
   width: 100%;
   text-align: center;
@@ -230,5 +223,29 @@ export default {
   flex: 1;
   height: 40px;
   border: 1px solid black;
+}
+aside {
+  flex: 1;
+}
+
+aside ul {
+  list-style: none;
+  margin-top: 7px;
+}
+
+aside ul li{
+  width: 130px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+}
+aside ul li:hover{
+  background-color: #eeeeee;
+}
+.tbe{
+  flex: 5;
+}
+#box{
+  display: flex;
 }
 </style>
