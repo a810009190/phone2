@@ -5,23 +5,34 @@
         <div class="header">
           <h2>{{name}}详情页</h2>
         </div>
-      </div>
-      <div class="navBar">
-        <ul class="headMenu">
-          <li
-            v-for="(item,index) in ctaskList"
-            :key="index"
-            @click="changeTask(item)"
-          >{{item | toDisplay}}</li>
-        </ul>
-      </div>
-      <div id="box">
+        <!-- <div class="navBar">
+          <ul class="headMenu">
+            <li
+              @click="changeTask(item)"
+            >{{item | toDisplay}}</li>
+          </ul>
+        </div>-->
+        <form>
+          <select
+            class="form-control"
+            style="width:99%; text-align: center"
+            @change="changeTask($event)"
+          >
+            <option
+              v-for="(item,index) in ctaskList"
+              :key="index"
+              :value="item"
+            >{{item | toDisplay}}</option>
+          </select>
+          <Button class="button" type="button" style="width:99%" @click="refresh()">查看该任务情况</Button>
+        </form>
+
         <aside>
           <ul>
             <li v-for="(item,index) in taskList" :key="index" @click="changeIndex(index)">{{item}}</li>
           </ul>
         </aside>
-        <table class="tbe">
+        <table>
           <tr>
             <th>提取项目</th>
             <th>提取情况</th>
@@ -95,7 +106,7 @@ export default {
   mounted() {
     this.name = this.$route.query.model;
     this.ctaskList = this.brandTask[this.$route.query.brandName];
-    console.log(this.$route.query.brandName);
+    // console.log(this.ctaskList);
     this.$axios
       .get("/data/huawei/" + this.$route.params.id + ".json")
       .then(res => {
@@ -133,8 +144,13 @@ export default {
       }
     },
     // 根据所选任务改变任务项
-    changeTask(item) {
-      this.getdata = this.alldata[item];
+    changeTask(e) {
+      let val = e.target.value;
+      console.log(val);
+      this.getdata = this.alldata[val];
+    },
+    refresh() {
+      this.currentList = this.getdata.basicList;
     }
   },
   filters: {
@@ -175,41 +191,6 @@ export default {
 </script>
 
 <style>
-/* .el-header {
-  background-color: #409eff;
-  color: white;
-  text-align: center;
-  height: 45px;
-  width: 80%;
-}
-.el-aside {
-  margin-top: 10px;
-}
-.el-menu-item {
-  margin: 10px 0 10px 0;
-  border: 1px solid black;
-}
-.el-col {
-  height: 200px;
-}
-.el-footer {
-  position: absolute;
-  bottom: 16px;
-  left: calc(48%);
-}
-
-.el-main {
-  background-color: #e9eef3;
-  color: #333;
-  text-align: center;
-}
-
-.el-table {
-  margin-top: 40px !important;
-  margin: auto;
-  max-height: 600px;
-  overflow: auto !important;
-} */
 .headMenu {
   width: 100%;
   text-align: center;
@@ -225,27 +206,25 @@ export default {
   border: 1px solid black;
 }
 aside {
-  flex: 1;
+  text-align: center;
+  width: 100%;
 }
-
 aside ul {
   list-style: none;
-  margin-top: 7px;
+  margin: 0 40px;
 }
 
-aside ul li{
-  width: 130px;
+aside ul li {
+  width: 100px;
   height: 50px;
   text-align: center;
   line-height: 50px;
+  float: left;
 }
-aside ul li:hover{
+aside ul li:hover {
   background-color: #eeeeee;
 }
-.tbe{
-  flex: 5;
-}
-#box{
+#box {
   display: flex;
 }
 </style>

@@ -22,25 +22,32 @@
           </select>
           <Button class="button" type="button" style="width:99%" @click="tolName()">查看该品牌手机情况</Button>
         </form>
-        <div class="fa">
-          <table class="tbe">
-            <tr>
-              <th v-for="(item, index) in phoneList" :key="index">{{item}}</th>
-            </tr>
-            <tr v-for="(item, index) in currentList" :key="index">
-              <td>{{item.model}}</td>
-              <td>{{item.Android_version}}</td>
-              <td>{{item.Vendor_version}}</td>
-              <td>{{item.isRoot}}</td>
-              <td>
-                <button class="nbutton" type="button" @click="handleToDetail(item.id, item.model)">查看详情</button>
-              </td>
-              <td>
-                <button class="nbutton" type="button" @click="handleToModify(item.id, item.model)">更新数据</button>
-              </td>
-            </tr>
-          </table>
-        </div>
+
+        <table class="tbe">
+          <tr>
+            <th v-for="(item, index) in phoneList" :key="index">{{item}}</th>
+          </tr>
+          <tr v-for="(item, index) in currentList" :key="index">
+            <td>{{item.model}}</td>
+            <td>{{item.Android_version}}</td>
+            <td>{{item.Vendor_version}}</td>
+            <td>{{item.isRoot}}</td>
+            <td>
+              <button
+                class="nbutton"
+                type="button"
+                @click="handleToDetail(item.id, item.model)"
+              >查看详情</button>
+            </td>
+            <td>
+              <button
+                class="nbutton"
+                type="button"
+                @click="handleToModify(item.id, item.model)"
+              >更新数据</button>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
   </div>
@@ -126,7 +133,7 @@ export default {
   background: #337ab7;
   color: white;
 }
-.fa{
+.fa {
   max-height: 800px;
   overflow: hidden;
 }
@@ -182,7 +189,7 @@ table tr:hover {
   transform: translateY(4px);
 }
 
-.nbutton{
+.nbutton {
   display: inline-block;
   padding: 2px 15px;
   font-size: 12px;
@@ -195,14 +202,14 @@ table tr:hover {
   border: none;
   border-radius: 4px;
 }
-select{
+select {
   margin: 6px;
   appearance: normal;
 }
-select option{
+select option {
   text-align: center;
 }
-h3{
+h3 {
   padding-top: 20px;
 }
 </style>
