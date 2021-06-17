@@ -14,8 +14,6 @@
         </div>-->
         <form>
           <select
-            class="form-control"
-            style="width:99%; text-align: center"
             @change="changeTask($event)"
           >
             <option
@@ -29,19 +27,28 @@
 
         <aside>
           <ul>
-            <li v-for="(item,index) in taskList" :key="index" @click="changeIndex(index)">{{item}}</li>
+            <li v-for="(item,index) in taskList" :key="index" @click="changeIndex(index)" :class="{'active': currentSort == index}">{{item}}</li>
           </ul>
         </aside>
+
         <table>
           <tr>
             <th>提取项目</th>
             <th>提取情况</th>
+            <th>最后提取版本</th>
           </tr>
-          <tr v-for="(item,index) in currentList" :key="index">
-            <td>{{item.displayName}}</td>
-            <td>{{item.isSuccess | toChinese}}</td>
-          </tr>
-        </table>
+          </table>
+          <div class="fb">
+            <table>
+              <tbody>
+                <tr v-for="(item,index) in currentList" :key="index">
+                  <td>{{item.displayName}}</td>
+                  <td>{{item.isSuccess | toChinese}}</td>
+                  <td>V3.10.2</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
       </div>
     </div>
   </div>
@@ -52,6 +59,7 @@ export default {
   name: "detail",
   data() {
     return {
+      currentSort: 0,
       name: "",
       alldata: {},
       getdata: {},
@@ -118,6 +126,7 @@ export default {
   methods: {
     // 根据索引展示指定项
     changeIndex(index) {
+      this.currentSort = index;
       if (index == 0) {
         this.currentList = this.getdata.basicList;
         console.log(this.currentList);
@@ -211,7 +220,7 @@ aside {
 }
 aside ul {
   list-style: none;
-  margin: 0 40px;
+  margin: 2px 40px;
 }
 
 aside ul li {
@@ -226,5 +235,14 @@ aside ul li:hover {
 }
 #box {
   display: flex;
+}
+.active{
+  background-color: #eeeeee;
+  border-radius: 2px;
+}
+.fb {
+  max-height: 633px;
+  overflow: auto;
+  width: 100%;
 }
 </style>

@@ -6,11 +6,7 @@
           <h3 style="text-align: center;">手机支持情况统计</h3>
         </div>
         <form>
-          <select
-            class="form-control"
-            style="width:99%; text-align: center"
-            @change="getBrand($event)"
-          >
+          <select @change="getBrand($event)" style="textalign:center">
             <option value="huaweiList">华为</option>
             <option value="vivoList">VIVO</option>
             <option value="xiaomiList">小米</option>
@@ -22,32 +18,33 @@
           </select>
           <Button class="button" type="button" style="width:99%" @click="tolName()">查看该品牌手机情况</Button>
         </form>
-
-        <table class="tbe">
-          <tr>
-            <th v-for="(item, index) in phoneList" :key="index">{{item}}</th>
-          </tr>
-          <tr v-for="(item, index) in currentList" :key="index">
-            <td>{{item.model}}</td>
-            <td>{{item.Android_version}}</td>
-            <td>{{item.Vendor_version}}</td>
-            <td>{{item.isRoot}}</td>
-            <td>
-              <button
-                class="nbutton"
-                type="button"
-                @click="handleToDetail(item.id, item.model)"
-              >查看详情</button>
-            </td>
-            <td>
-              <button
-                class="nbutton"
-                type="button"
-                @click="handleToModify(item.id, item.model)"
-              >更新数据</button>
-            </td>
-          </tr>
-        </table>
+        <div class="fa">
+          <table class="tbe">
+            <tr>
+              <th v-for="(item, index) in phoneList" :key="index">{{item}}</th>
+            </tr>
+            <tr v-for="(item, index) in currentList" :key="index">
+              <td>{{item.model}}</td>
+              <td>{{item.Android_version}}</td>
+              <td>{{item.Vendor_version}}</td>
+              <td>{{item.isRoot}}</td>
+              <td>
+                <button
+                  class="nbutton"
+                  type="button"
+                  @click="handleToDetail(item.id, item.model)"
+                >查看详情</button>
+              </td>
+              <td>
+                <button
+                  class="nbutton"
+                  type="button"
+                  @click="handleToModify(item.id, item.model)"
+                >更新数据</button>
+              </td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
   </div>
@@ -115,11 +112,21 @@ export default {
 };
 </script>
 <style>
+select {
+  width: auto;
+  margin: 0;
+  padding: 0 45%;
+}
+option{
+  position: absolute;
+  left: 50%;
+}
 .panel {
   border: 1px solid #337ab7;
   border-radius: 5px;
   height: 100%;
   text-align: center;
+  margin-bottom: 2px auto;
 }
 .header {
   background: #337ab7;
@@ -134,8 +141,9 @@ export default {
   color: white;
 }
 .fa {
-  max-height: 800px;
-  overflow: hidden;
+  max-height: 780px;
+  overflow: auto;
+  width: 100%;
 }
 table {
   border-collapse: collapse;
@@ -145,7 +153,7 @@ table {
 }
 table td,
 table th {
-  padding: 8px;
+  padding: 4px;
   border: 1px solid #e6eaec;
   color: #666;
   line-height: 40px;
@@ -212,4 +220,10 @@ select option {
 h3 {
   padding-top: 20px;
 }
+::-webkit-scrollbar {
+  width: 0px;
+}
+/* .inContainer{
+  scrollbar-width: none;
+} */
 </style>
