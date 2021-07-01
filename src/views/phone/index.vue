@@ -69,7 +69,8 @@ export default {
         "Root情况",
         "查看详情",
         "更新数据"
-      ]
+      ],
+      huaweiList:[]
     };
   },
   methods: {
@@ -104,9 +105,22 @@ export default {
   },
   mounted() {
     // 拿到手机各品牌设备数据
-    this.$axios.get("/data/phone.json").then(res => {
+    this.$axios.get("http://localhost:3000/phoneList").then(res => {
       this.alldata = res.data;
-      this.currentList = res.data.huaweiList;
+      // console.log(res.data);
+      for(var i=0;i<res.data.length;i++){
+        
+        if(this.alldata[i].brand == "huawei"){
+          let l = this.alldata[i]
+          
+          this.huaweiList.push(l);
+          // console.log(this.huaweiList)
+          
+        }
+        
+      }
+      this.currentList = this.huaweiList;
+      // console.log(this.currentList[1].id)
     });
   }
 };

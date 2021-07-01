@@ -3,7 +3,7 @@
     <div class="container">
       <div class="panel">
         <div class="header">
-          <h2>{{name}}详情页</h2>
+          <h2>{{name}}详情页<span class="return">返回</span></h2>
         </div>
         <!-- <div class="navBar">
           <ul class="headMenu">
@@ -244,5 +244,12 @@ aside ul li:hover {
   max-height: 633px;
   overflow: auto;
   width: 100%;
+}
+h2{
+  position: relative;
+}
+.return{
+  position: absolute;
+  right: 0;
 }
 </style>
