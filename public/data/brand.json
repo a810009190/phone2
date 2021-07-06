@@ -1,0 +1,51 @@
+[
+    {
+        "brandName": "huaweiList",
+        "brand": "huawei",
+        "brandNum": 0,
+        "dislpayName": "华为"
+    },
+    {
+        "brandName": "vivoList",
+        "brand": "vivo",
+        "brandNum": 1,
+        "dislpayName": "VIVO"
+    },
+    {
+        "brandName": "xiaomiList",
+        "brand": "xiaomi",
+        "brandNum": 2,
+        "dislpayName": "小米"
+    },
+    {
+        "brandName": "oppoList",
+        "brand": "oppo",
+        "brandNum": 3,
+        "dislpayName": "OPPO"
+    },
+    {
+        "brandName": "googleList",
+        "brand": "google",
+        "brandNum": 4,
+        "dislpayName": "谷歌"
+    },
+    {
+        "brandName": "nokiaList",
+        "brand": "nokia",
+        "brandNum": 5,
+        "dislpayName": "诺基亚"
+    },
+    {
+        "brandName": "meizuList",
+        "brand": "meizu",
+        "brandNum": 6,
+        "dislpayName": "魅族"
+    },
+    {
+        "brandName": "samsungList",
+        "brand": "samsung",
+        "brandNum": 7,
+        "dislpayName": "三星"
+    }
+    
+]

@@ -6,15 +6,8 @@
           <h3 style="text-align: center;">手机支持情况统计</h3>
         </div>
         <form>
-          <select @change="getBrand($event)" style="textalign:center">
-            <option value="huaweiList">华为</option>
-            <option value="vivoList">VIVO</option>
-            <option value="xiaomiList">小米</option>
-            <option value="oppoList">OPPO</option>
-            <option value="googleList">谷歌</option>
-            <option value="nokiaList">诺基亚</option>
-            <option value="meizuList">魅族</option>
-            <option value="samsungList">三星</option>
+          <select style="textalign:center" @change=getBrand($event)>
+            <option v-for="(item,index) in brandData" :key="index" :value="item.brandName">{{item.displayName}}</option>
           </select>
           <Button class="button" type="button" style="width:99%" @click="tolName()">查看该品牌手机情况</Button>
         </form>
@@ -70,7 +63,17 @@ export default {
         "查看详情",
         "更新数据"
       ],
-      huaweiList:[]
+      huaweiList: [],
+      oppoList: [],
+      vivoList: [],
+      googleList:[],
+      nokiaList:[],
+      meizuList:[],
+      samsungList:[],
+      allList: [],
+      xiaomiList:[],
+      brandData:[],
+      brandNum:0
     };
   },
   methods: {
@@ -78,13 +81,44 @@ export default {
     getBrand(e) {
       let val = e.target.value;
       this.brandName = val;
+      switch (val) {
+        case "huaweiList":
+          this.brandNum = 0;
+          break;
+        case "vivoList":
+          this.brandNum = 1;
+          break;
+        case "xiaomiList":
+          this.brandNum = 2;
+          break;
+        case "oppoList":
+          this.brandNum = 3;
+          break;
+        case "googleList":
+          this.brandNum = 4;
+          break;
+        case "nokiaList":
+          this.brandNum = 5;
+          break;
+        case "meizuList":
+          this.brandNum = 6;
+          break;
+        case "samsungList":
+          this.brandNum = 7;
+          break;
+        // default:
+        //   break;
+      }
+      // console.log(this.brandNum);
     },
     // 渲染所选列表数据
-    tolName() {
-      this.currentList = this.alldata[this.brandName];
+    tolName(index) {
+      this.currentList = this.allList[this.brandNum];
+      
     },
     // 查看详情按钮点击跳转并传参
     handleToDetail(id, model) {
+      console.log(id);
       this.$router.push({
         path: "/detail/" + id,
         query: {
@@ -108,20 +142,51 @@ export default {
     this.$axios.get("http://localhost:3000/phoneList").then(res => {
       this.alldata = res.data;
       // console.log(res.data);
-      for(var i=0;i<res.data.length;i++){
-        
-        if(this.alldata[i].brand == "huawei"){
-          let l = this.alldata[i]
-          
-          this.huaweiList.push(l);
+      for (var i = 0; i < res.data.length; i++) {
+        if (this.alldata[i].brand == "huawei") {
+          let lh = this.alldata[i];
+
+          this.huaweiList.push(lh);
+
           // console.log(this.huaweiList)
-          
-        }
-        
+        } else if (this.alldata[i].brand == "oppo") {
+          let lo = this.alldata[i];
+
+          this.oppoList.push(lo);
+        } else if (this.alldata[i].brand == "xiaomi") {
+          let lx = this.alldata[i];
+
+          this.xiaomiList.push(lx);
+        } else if (this.alldata[i].brand == "vivo") {
+          let lv = this.alldata[i];
+
+          this.vivoList.push(lv);
+        } else if (this.alldata[i].brand == "google") {
+          let lg = this.alldata[i];
+
+          this.googleList.push(lg);
+        } else if (this.alldata[i].brand == "nokia") {
+          let ln = this.alldata[i];
+
+          this.nokiaList.push(ln);
+        } else if (this.alldata[i].brand == "meizu") {
+          let lm = this.alldata[i];
+
+          this.meizuList.push(lm);
+        } else if (this.alldata[i].brand == "samsung") {
+          let ls = this.alldata[i];
+
+          this.samsungList.push(ls);
+        } 
       }
+      this.allList.push(this.huaweiList,this.vivoList,this.xiaomiList,this.oppoList,this.googleList,this.nokiaList,this.meizuList,this.samsungList);
       this.currentList = this.huaweiList;
-      // console.log(this.currentList[1].id)
     });
+
+    this.$axios.get("http://localhost:3000/brandList").then(res => {
+      this.brandData = res.data;
+      
+    })
   }
 };
 </script>
@@ -131,7 +196,7 @@ select {
   margin: 0;
   padding: 0 45%;
 }
-option{
+option {
   position: absolute;
   left: 50%;
 }
