@@ -1,5 +1,14 @@
 <template>
   <div id="box">
+    <!-- <el-alert 
+    type="success"
+    show-icon
+    style="position:absolute; left:calc(50% - 200px); top 20px; width:400px; height:30px"
+    center
+    v-show="isShow"
+    >
+    切换成功
+    </el-alert> -->
     <div class="container">
       <div class="panel">
         <div class="header">
@@ -52,6 +61,7 @@ export default {
   },
   data() {
     return {
+      isShow: false,
       alldata: {},
       brandName: "huaweiList",
       currentList: [],
@@ -113,9 +123,18 @@ export default {
     },
     // 渲染所选列表数据
     tolName(index) {
+      // this.changeShow();
+      // setTimeout(()=>{this.changeShow()},3000)
+      this.$message({
+        message:'切换成功',
+        type:"success"
+      });
       this.currentList = this.allList[this.brandNum];
       
     },
+    // changeShow(){
+    //   this.isShow = !this.isShow
+    // },
     // 查看详情按钮点击跳转并传参
     handleToDetail(id, model) {
       console.log(id);
@@ -232,11 +251,11 @@ table {
 }
 table td,
 table th {
-  padding: 4px;
+  padding: 0 !important;  
   border: 1px solid #e6eaec;
   color: #666;
   line-height: 40px;
-  width: 536px !important;
+  width: 323.25px !important;
   height: 68px !important;
 }
 table thead th {

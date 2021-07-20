@@ -3,7 +3,10 @@
     <div class="container">
       <div class="panel">
         <div class="header">
-          <h2>{{name}}详情页<span class="return">返回</span></h2>
+          <h2>
+            {{name}}详情页
+            <span class="return" @click="back()">返回</span>
+          </h2>
         </div>
         <!-- <div class="navBar">
           <ul class="headMenu">
@@ -13,9 +16,7 @@
           </ul>
         </div>-->
         <form>
-          <select
-            @change="changeTask($event)"
-          >
+          <select @change="changeTask($event)">
             <option
               v-for="(item,index) in ctaskList"
               :key="index"
@@ -27,7 +28,12 @@
 
         <aside>
           <ul>
-            <li v-for="(item,index) in taskList" :key="index" @click="changeIndex(index)" :class="{'active': currentSort == index}">{{item}}</li>
+            <li
+              v-for="(item,index) in taskList"
+              :key="index"
+              @click="changeIndex(index)"
+              :class="{'active': currentSort == index}"
+            >{{item}}</li>
           </ul>
         </aside>
 
@@ -37,18 +43,18 @@
             <th>提取情况</th>
             <th>最后提取版本</th>
           </tr>
+        </table>
+        <div class="fb">
+          <table>
+            <tbody>
+              <tr v-for="(item,index) in currentList" :key="index">
+                <td>{{item.displayName}}</td>
+                <td>{{item.isSuccess | toChinese}}</td>
+                <td>{{item.recordVersion}}</td>
+              </tr>
+            </tbody>
           </table>
-          <div class="fb">
-            <table>
-              <tbody>
-                <tr v-for="(item,index) in currentList" :key="index">
-                  <td>{{item.displayName}}</td>
-                  <td>{{item.isSuccess | toChinese}}</td>
-                  <td>V3.10.2</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -59,6 +65,7 @@ export default {
   name: "detail",
   data() {
     return {
+      isShow: false,
       currentSort: 0,
       name: "",
       alldata: {},
@@ -83,32 +90,28 @@ export default {
         huaweiList: [
           "androidIntelligent",
           "androidhuaweiclone",
-          "androidhuaweiexchange",
-          "androidselfbackup",
-          "androidextra"
+          "androidhuaweiexchange"
         ],
-        vivoList: ["androidIntelligent", "androidvivoexchange", "androidextra"],
-        xiaomiList: [
-          "androidIntelligent",
-          "androidxiaomiexchange",
-          "androidselfbackup",
-          "androidextra"
-        ],
-        oppoList: [
-          "androidIntelligent",
-          "androidoppoexchange",
-          "androidselfbackup",
-          "androidextra"
-        ],
-        googleList: ["androidIntelligent", "androidextra"],
-        nokiaList: ["androidIntelligent", "androidextra"],
-        meizuList: ["androidIntelligent", "androidselfbackup", "androidextra"],
-        samsungList: [
-          "androidIntelligent",
-          "androidsamsungexchange",
-          "androidextra"
-        ]
-      }
+        vivoList: ["androidIntelligent", "androidvivoexchange"],
+        xiaomiList: ["androidIntelligent", "androidxiaomiexchange"],
+        oppoList: ["androidIntelligent", "androidoppoexchange"],
+        googleList: ["androidIntelligent"],
+        nokiaList: ["androidIntelligent"],
+        meizuList: ["androidIntelligent"],
+        samsungList: ["androidIntelligent", "androidsamsungexchange"]
+      },
+      basicList: [],
+      broswerList: [],
+      imList: [],
+      intlimList: [],
+      mailList: [],
+      clouddistList: [],
+      videoList: [],
+      workerList: [],
+      geoList: [],
+      ecommerceList: [],
+      toolsList: [],
+      taskId: "a"
     };
   },
   mounted() {
@@ -116,11 +119,12 @@ export default {
     this.ctaskList = this.brandTask[this.$route.query.brandName];
     // console.log(this.ctaskList);
     this.$axios
-      .get("/data/huawei/" + this.$route.params.id + ".json")
+      // .get("/data/huawei/" + this.$route.params.id + ".json")
+      .get("http://localhost:3001/r" + this.$route.params.id + this.taskId)
       .then(res => {
-        this.getdata = res.data.androidIntelligent;
         this.alldata = res.data;
-        this.currentList = this.getdata.basicList;
+        this.dataScreen(this.alldata);
+        this.currentList = this.basicList;
       });
   },
   methods: {
@@ -128,38 +132,72 @@ export default {
     changeIndex(index) {
       this.currentSort = index;
       if (index == 0) {
-        this.currentList = this.getdata.basicList;
+        this.currentList = this.basicList;
         console.log(this.currentList);
       } else if (index == 1) {
-        this.currentList = this.getdata.broswerList;
+        this.currentList = this.broswerList;
       } else if (index == 2) {
-        this.currentList = this.getdata.imList;
+        this.currentList = this.imList;
       } else if (index == 3) {
-        this.currentList = this.getdata.intlimList;
+        this.currentList = this.intlimList;
       } else if (index == 4) {
-        this.currentList = this.getdata.mailList;
+        this.currentList = this.mailList;
       } else if (index == 5) {
-        this.currentList = this.getdata.clouddistList;
+        this.currentList = this.clouddistList;
       } else if (index == 6) {
-        this.currentList = this.getdata.videoList;
+        this.currentList = this.videoList;
       } else if (index == 7) {
-        this.currentList = this.getdata.workerList;
+        this.currentList = this.workerList;
       } else if (index == 8) {
-        this.currentList = this.getdata.geoList;
+        this.currentList = this.geoList;
       } else if (index == 9) {
-        this.currentList = this.getdata.ecommerceList;
+        this.currentList = this.ecommerceList;
       } else {
-        this.currentList = this.getdata.toolsList;
+        this.currentList = this.toolsList;
       }
     },
     // 根据所选任务改变任务项
     changeTask(e) {
       let val = e.target.value;
       console.log(val);
-      this.getdata = this.alldata[val];
+      if (val == "androidIntelligent") {
+        this.taskId = "a";
+      } else if (val == "androidhuaweiclone") {
+        this.taskId = "b";
+      } else {
+        this.taskId = "c";
+      }
+      // console.log(this.taskId);
     },
     refresh() {
-      this.currentList = this.getdata.basicList;
+      this.$axios
+        .get("http://localhost:3001/r" + this.$route.params.id + this.taskId)
+        .then(res => {
+          this.alldata = res.data;
+          this.dataScreen(this.alldata);
+          this.currentList = this.basicList;
+        });
+      this.$message({
+        message: "切换成功",
+        type: "success"
+      });
+      this.currentList = this.allList[this.brandNum];
+    },
+    dataScreen(data) {
+      this.basicList = data.filter(item => item.class == "basic");
+      this.broswerList = data.filter(item => item.class == "broswer");
+      this.imList = data.filter(item => item.class == "im");
+      this.intlimList = data.filter(item => item.class == "intlim");
+      this.mailList = data.filter(item => item.class == "mail");
+      this.clouddistList = data.filter(item => item.class == "clouddist");
+      this.videoList = data.filter(item => item.class == "video");
+      this.workerList = data.filter(item => item.class == "worker");
+      this.geoList = data.filter(item => item.class == "geo");
+      this.ecommerceList = data.filter(item => item.class == "ecommerce");
+      this.toolsList = data.filter(item => item.class == "tools");
+    },
+    back() {
+      this.$router.go(-1);
     }
   },
   filters: {
@@ -236,7 +274,7 @@ aside ul li:hover {
 #box {
   display: flex;
 }
-.active{
+.active {
   background-color: #eeeeee;
   border-radius: 2px;
 }
@@ -245,10 +283,10 @@ aside ul li:hover {
   overflow: auto;
   width: 100%;
 }
-h2{
+h2 {
   position: relative;
 }
-.return{
+.return {
   position: absolute;
   right: 0;
 }

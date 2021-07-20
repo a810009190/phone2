@@ -27,7 +27,7 @@ export default new Router({
       component: SearchRouter
     },
     {
-      path: '/modify',
+      path: '/modify/:id',
       name: 'modify',
       component: ModifyRouter
     },
