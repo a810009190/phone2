@@ -53,18 +53,21 @@
                 <td>{{item.displayName}}</td>
                 <td>{{item.isSuccess | toChinese}}</td>
                 <td>
-                  <select>
-                    <option value="0">失败</option>
-                    <option value="1">成功</option>
-                    <option value="2">未知</option>
+                  <select @change="clearSelect($event)">
+                    <!-- 每次选择后切换列表input的数据会保存，后期优化思路利用v-model绑定数组 切换时或提交时清空-->
+                    <option
+                      v-for="(option,index) in options"
+                      :key="index"
+                      :value="option.value"
+                    >{{option.text}}</option>
                   </select>
                 </td>
                 <td>{{item.recordVersion}}</td>
                 <td>
-                  <input type="text" @change="clear($event)">
+                  <input type="text" @change="clearInput($event)">
                 </td>
                 <td>
-                  <button class="nbutton" type="button" @click="showId(item.id)">修改该项</button>
+                  <button class="nbutton" type="button" @click="modiData(item.id)">修改该项</button>
                 </td>
               </tr>
             </tbody>
@@ -81,6 +84,7 @@ export default {
   data() {
     return {
       inputValue: "",
+      selectValue: 0,
       currentSort: 0,
       name: "",
       alldata: {},
@@ -88,6 +92,12 @@ export default {
       trIndex: 0,
       currentList: [],
       ctaskList: [],
+      selected: 0,
+      options: [
+        { text: "失败", value: 0 },
+        { text: "成功", value: 1 },
+        { text: "未知", value: 2 }
+      ],
       taskList: [
         "基本信息",
         "浏览器",
@@ -135,7 +145,7 @@ export default {
     // console.log(this.ctaskList);
     this.$axios
       // .get("/data/huawei/" + this.$route.params.id + ".json")
-      .get("http://localhost:3001/r" + this.$route.params.id + this.taskId)
+      .get("http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId)
       .then(res => {
         this.alldata = res.data;
         this.dataScreen(this.alldata);
@@ -171,12 +181,37 @@ export default {
         this.currentList = this.toolsList;
       }
     },
-    clear(e){
+    // 清空选项，拿到选项
+    clearSelect(e) {
+      this.selectValue = e.target.value;
+      console.log(this.selectValue);
+    },
+    // 清空输入框，拿到输入框内容
+    clearInput(e) {
+      this.inputValue = e.target.value;
       // console.log(e.target.value);
       e.target.value = "";
+      console.log(this.inputValue);
     },
-    showId(id){
-      console.log(id);
+    modiData(id) {
+      let data = {
+        taskId: id,
+        phoneId: this.$route.params.id + this.taskId,
+        isSuccess: this.selectValue,
+        Vendor_version: this.inputValue
+      };
+      this.$axios.post("http://172.16.10.124:3000/modify", data);
+      this.$axios
+        .get("http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId)
+        .then(res => {
+          this.alldata = res.data;
+          this.dataScreen(this.alldata);
+          this.currentList = this.basicList;
+        });
+      this.$message({
+        message: "切换成功",
+        type: "success"
+      });
     },
     // 根据所选任务改变任务项
     changeTask(e) {
@@ -191,9 +226,10 @@ export default {
       }
       console.log(this.taskId);
     },
+    // 切换任务
     refresh() {
       this.$axios
-        .get("http://localhost:3001/r" + this.$route.params.id + this.taskId)
+        .get("http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId)
         .then(res => {
           this.alldata = res.data;
           this.dataScreen(this.alldata);
@@ -311,17 +347,17 @@ h2 {
   position: absolute;
   right: 0;
 }
-select{
+select {
   width: auto;
-  padding: 0 30%!important;
-  text-align: center
+  padding: 0 30% !important;
+  text-align: center;
 }
-input{
+input {
   height: 24px;
 }
 table td,
 table th {
-  padding: 0 !important;  
+  padding: 0 !important;
   border: 1px solid #e6eaec;
   color: #666;
   line-height: 40px;

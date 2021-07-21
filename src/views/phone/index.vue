@@ -158,7 +158,7 @@ export default {
   },
   mounted() {
     // 拿到手机各品牌设备数据
-    this.$axios.get("http://localhost:3000/phoneList").then(res => {
+    this.$axios.get("http://172.16.10.124:3000/phoneList").then(res => {
       this.alldata = res.data;
       // console.log(res.data);
       for (var i = 0; i < res.data.length; i++) {
@@ -202,7 +202,7 @@ export default {
       this.currentList = this.huaweiList;
     });
 
-    this.$axios.get("http://localhost:3000/brandList").then(res => {
+    this.$axios.get("http://172.16.10.124:3000/brandList").then(res => {
       this.brandData = res.data;
       
     })

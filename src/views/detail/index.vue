@@ -120,7 +120,7 @@ export default {
     // console.log(this.ctaskList);
     this.$axios
       // .get("/data/huawei/" + this.$route.params.id + ".json")
-      .get("http://localhost:3001/r" + this.$route.params.id + this.taskId)
+      .get("http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId)
       .then(res => {
         this.alldata = res.data;
         this.dataScreen(this.alldata);
@@ -171,7 +171,7 @@ export default {
     },
     refresh() {
       this.$axios
-        .get("http://localhost:3001/r" + this.$route.params.id + this.taskId)
+        .get("http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId)
         .then(res => {
           this.alldata = res.data;
           this.dataScreen(this.alldata);
