@@ -51,10 +51,10 @@
             <tbody>
               <tr v-for="(item,index) in currentList" :key="index">
                 <td>{{item.displayName}}</td>
-                <td>{{item.isSuccess | toChinese}}</td>
+                <td :class="delCss(item.isSuccess)">{{item.isSuccess | toChinese}}</td>
                 <td>
-                  <select @change="clearSelect($event)">
-                    <!-- 每次选择后切换列表input的数据会保存，后期优化思路利用v-model绑定数组 切换时或提交时清空-->
+                  <select @change="clearSelect(index)" v-model="seVal[index]">
+                    <!-- 利用v-model绑定数组 切换时或提交时清空-->
                     <option
                       v-for="(option,index) in options"
                       :key="index"
@@ -64,7 +64,7 @@
                 </td>
                 <td>{{item.recordVersion}}</td>
                 <td>
-                  <input type="text" @change="clearInput($event)">
+                  <input type="text" @change="clearInput(index)" v-model="inputVal[index]">
                 </td>
                 <td>
                   <button class="nbutton" type="button" @click="modiData(item.id)">修改该项</button>
@@ -83,6 +83,9 @@ export default {
   name: "modify",
   data() {
     return {
+      changeColor: "normal",
+      seVal: [],
+      inputVal: [],
       inputValue: "",
       selectValue: 0,
       currentSort: 0,
@@ -149,6 +152,7 @@ export default {
       .then(res => {
         this.alldata = res.data;
         this.dataScreen(this.alldata);
+        // console.log(this.intlimList);
         this.currentList = this.basicList;
       });
   },
@@ -158,7 +162,7 @@ export default {
       this.currentSort = index;
       if (index == 0) {
         this.currentList = this.basicList;
-        console.log(this.currentList);
+        // console.log(this.currentList);
       } else if (index == 1) {
         this.currentList = this.broswerList;
       } else if (index == 2) {
@@ -180,20 +184,31 @@ export default {
       } else {
         this.currentList = this.toolsList;
       }
+      this.seVal = [];
+      this.inputVal = [];
     },
     // 清空选项，拿到选项
-    clearSelect(e) {
-      this.selectValue = e.target.value;
-      console.log(this.selectValue);
+    clearSelect(index) {
+      this.selectValue = this.seVal[index];
+      // console.log(this.selectValue);
+      console.log(this.seVal[index]);
     },
     // 清空输入框，拿到输入框内容
-    clearInput(e) {
-      this.inputValue = e.target.value;
-      // console.log(e.target.value);
-      e.target.value = "";
-      console.log(this.inputValue);
+    clearInput(index) {
+      this.inputValue = this.inputVal[index];
     },
     modiData(id) {
+      if (this.selectValue === "") {
+        this.$message({
+          message: "空着干嘛",
+          type: "error"
+        });
+        return;
+      }
+      if (!this.inputValue) {
+        this.inputValue = "V3.10.1";
+      }
+
       let data = {
         taskId: id,
         phoneId: this.$route.params.id + this.taskId,
@@ -201,22 +216,30 @@ export default {
         Vendor_version: this.inputValue
       };
       this.$axios.post("http://172.16.10.124:3000/modify", data);
-      this.$axios
-        .get("http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId)
-        .then(res => {
-          this.alldata = res.data;
-          this.dataScreen(this.alldata);
-          this.currentList = this.basicList;
-        });
+
+      let newArr = this.currentList;
+      let item;
+      newArr.forEach(item => {
+        if (item.id == id) {
+          item.isSuccess = this.selectValue;
+          item.recordVersion = this.inputValue;
+        }
+      });
+
+      this.currentList = newArr;
+      this.seVal = [];
+      this.inputVal = [];
+      this.inputValue = "";
+      this.selectValue = "";
       this.$message({
-        message: "切换成功",
+        message: "修改成功",
         type: "success"
       });
     },
     // 根据所选任务改变任务项
     changeTask(e) {
       let val = e.target.value;
-      console.log(val);
+      // console.log(val);
       if (val == "androidIntelligent") {
         this.taskId = "a";
       } else if (val == "androidhuaweiclone") {
@@ -224,12 +247,14 @@ export default {
       } else {
         this.taskId = "c";
       }
-      console.log(this.taskId);
+      // console.log(this.taskId);
     },
     // 切换任务
     refresh() {
       this.$axios
-        .get("http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId)
+        .get(
+          "http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId
+        )
         .then(res => {
           this.alldata = res.data;
           this.dataScreen(this.alldata);
@@ -255,6 +280,10 @@ export default {
     },
     back() {
       this.$router.go(-1);
+    },
+    delCss(val){
+      let css = val == 0 ? 'fail' : (val == 1 ? 'success' : 'normal');
+      return css;
     }
   },
   filters: {
@@ -363,5 +392,14 @@ table th {
   line-height: 40px;
   width: 215.5px !important;
   height: 68px !important;
+}
+.success{
+  color: #33cc33;
+}
+.fail{
+  color: red;
+}
+.normal{
+  color: #666666
 }
 </style>

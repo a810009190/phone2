@@ -49,7 +49,7 @@
             <tbody>
               <tr v-for="(item,index) in currentList" :key="index">
                 <td>{{item.displayName}}</td>
-                <td>{{item.isSuccess | toChinese}}</td>
+                <td :class="delCss(item.isSuccess)">{{item.isSuccess | toChinese}}</td>
                 <td>{{item.recordVersion}}</td>
               </tr>
             </tbody>
@@ -171,7 +171,9 @@ export default {
     },
     refresh() {
       this.$axios
-        .get("http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId)
+        .get(
+          "http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId
+        )
         .then(res => {
           this.alldata = res.data;
           this.dataScreen(this.alldata);
@@ -198,6 +200,10 @@ export default {
     },
     back() {
       this.$router.go(-1);
+    },
+    delCss(val) {
+      let css = val == 0 ? "fail" : val == 1 ? "success" : "normal";
+      return css;
     }
   },
   filters: {
@@ -237,7 +243,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .headMenu {
   width: 100%;
   text-align: center;
@@ -289,5 +295,14 @@ h2 {
 .return {
   position: absolute;
   right: 0;
+}
+.success{
+  color: #33cc33;
+}
+.fail{
+  color: red;
+}
+.normal{
+  color: #666666
 }
 </style>
