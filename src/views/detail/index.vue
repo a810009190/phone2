@@ -3,10 +3,10 @@
     <div class="container">
       <div class="panel">
         <div class="header">
-          <h2>
+          <h3>
             {{name}}详情页
             <span class="return" @click="back()">返回</span>
-          </h2>
+          </h3>
         </div>
         <!-- <div class="navBar">
           <ul class="headMenu">
@@ -289,7 +289,8 @@ aside ul li:hover {
   overflow: auto;
   width: 100%;
 }
-h2 {
+h3 {
+  padding-top: 20px !important;
   position: relative;
 }
 .return {

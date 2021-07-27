@@ -8,15 +8,50 @@
     v-show="isShow"
     >
     切换成功
-    </el-alert> -->
+    </el-alert>-->
     <div class="container">
       <div class="panel">
         <div class="header">
-          <h3 style="text-align: center;">手机支持情况统计</h3>
+          <h3 style="text-align: center;">
+            手机支持情况统计
+            <span class="return" @click="drawer = true">更多</span>
+          </h3>
+          <el-drawer title="更多" :visible.sync="drawer">
+            <hr/>
+            <h4>添加一个品牌</h4>
+            <div class="drawerBox">
+              <span>品牌名称</span><input type="text" placeholder="中文名" v-model="inputVal11"><input type="text" placeholder="英文名" v-model="inputVal12">
+              <button class="nbutton" @click="addBrand()">提交</button>
+              <button class="nbutton" @click="clear1()">重置</button>
+            </div>
+            <div :class="isSuccess ? 'success':'fail'">{{messageBox1}}</div>
+            <hr/>
+            <h4>添加一个手机</h4>
+            <div class="drawerBox">
+              <span>手机品牌</span>
+              <input type="text" v-model="inputVal2">
+            </div>
+            <div class="drawerBox">
+              <span>手机型号</span>
+              <input type="text" v-model="inputVal3">
+            </div>
+            <div class="drawerBox">
+              <span>安卓版本</span>
+              <input type="text" v-model="inputVal4">
+            </div>
+            <div>
+              <button class="nbutton" style="height:36px;">提交</button>
+              <button class="nbutton" style="height:36px;" @click="clear234()">重置</button>
+            </div>
+          </el-drawer>
         </div>
         <form>
-          <select style="textalign:center" @change=getBrand($event)>
-            <option v-for="(item,index) in brandData" :key="index" :value="item.brandName">{{item.displayName}}</option>
+          <select style="textalign:center" @change="getBrand($event)">
+            <option
+              v-for="(item,index) in brandData"
+              :key="index"
+              :value="item.brandName"
+            >{{item.displayName}}</option>
           </select>
           <Button class="button" type="button" style="width:99%" @click="tolName()">查看该品牌手机情况</Button>
         </form>
@@ -61,6 +96,14 @@ export default {
   },
   data() {
     return {
+      messageBox1:"",
+      isSuccess: true,
+      inputVal11:"",
+      inputVal12:"",
+      inputVal2:"",
+      inputVal3:"",
+      inputVal4:"",
+      drawer: false,
       isShow: false,
       alldata: {},
       brandName: "huaweiList",
@@ -76,14 +119,14 @@ export default {
       huaweiList: [],
       oppoList: [],
       vivoList: [],
-      googleList:[],
-      nokiaList:[],
-      meizuList:[],
-      samsungList:[],
+      googleList: [],
+      nokiaList: [],
+      meizuList: [],
+      samsungList: [],
       allList: [],
-      xiaomiList:[],
-      brandData:[],
-      brandNum:0
+      xiaomiList: [],
+      brandData: [],
+      brandNum: 0
     };
   },
   methods: {
@@ -126,11 +169,10 @@ export default {
       // this.changeShow();
       // setTimeout(()=>{this.changeShow()},3000)
       this.$message({
-        message:'切换成功',
-        type:"success"
+        message: "切换成功",
+        type: "success"
       });
       this.currentList = this.allList[this.brandNum];
-      
     },
     // changeShow(){
     //   this.isShow = !this.isShow
@@ -152,6 +194,34 @@ export default {
         query: {
           brandName: this.brandName,
           model: model
+        }
+      });
+    },
+    clear1(){
+      this.inputVal11 = "";
+      this.inputVal12 = "";
+    },
+    clear234(){
+      this.inputVal2 = "";
+      this.inputVal3 = "";
+      this.inputVal4 = "";
+    },
+    addBrand(){
+      if(!this.inputVal11 || !this.inputVal12){
+        this.messageBox1 = "请输入品牌名称！";
+        this.isSuccess = false;
+        return
+      }
+      let data = {
+        brandName: this.inputVal12 + "List",
+        brand: this.inputVal12,
+        brandNum: this.brandData.length,
+        displayName: this.inputVal11,
+      }
+      this.$axios.post("http://172.16.10.124:3000/addBrand", data).then(res =>{
+        if(res.data == "ok"){
+          this.messageBox1 = "添加成功！";
+          this.isSuccess = true;
         }
       });
     }
@@ -196,16 +266,24 @@ export default {
           let ls = this.alldata[i];
 
           this.samsungList.push(ls);
-        } 
+        }
       }
-      this.allList.push(this.huaweiList,this.vivoList,this.xiaomiList,this.oppoList,this.googleList,this.nokiaList,this.meizuList,this.samsungList);
+      this.allList.push(
+        this.huaweiList,
+        this.vivoList,
+        this.xiaomiList,
+        this.oppoList,
+        this.googleList,
+        this.nokiaList,
+        this.meizuList,
+        this.samsungList
+      );
       this.currentList = this.huaweiList;
     });
 
     this.$axios.get("http://172.16.10.124:3000/brandList").then(res => {
       this.brandData = res.data;
-      
-    })
+    });
   }
 };
 </script>
@@ -251,7 +329,7 @@ table {
 }
 table td,
 table th {
-  padding: 0 !important;  
+  padding: 0 !important;
   border: 1px solid #e6eaec;
   color: #666;
   line-height: 40px;
@@ -307,6 +385,7 @@ table tr:hover {
   background-color: #337ab7;
   border: none;
   border-radius: 4px;
+  margin: 2px;
 }
 select {
   margin: 6px;
@@ -317,6 +396,7 @@ select option {
 }
 h3 {
   padding-top: 20px;
+  position: relative;
 }
 ::-webkit-scrollbar {
   width: 0px;
@@ -324,4 +404,30 @@ h3 {
 /* .inContainer{
   scrollbar-width: none;
 } */
+.return {
+  position: absolute;
+  right: 0;
+}
+.el-drawer {
+  color: black !important;
+}
+.drawerBox {
+  display: flex;
+}
+.drawerBox h3,h4,span {
+  margin: 5px;
+}
+.drawerBox input {
+  flex: 1;
+  margin: 5px;
+}
+hr{
+  border: 1 dashed;
+}
+.success{
+  color: #33cc33;
+}
+.fail{
+  color: red;
+}
 </style>
