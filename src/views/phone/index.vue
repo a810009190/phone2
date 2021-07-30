@@ -17,45 +17,62 @@
             <span class="return" @click="drawer = true">更多</span>
           </h3>
           <el-drawer title="更多" :visible.sync="drawer">
-            <hr/>
+            <hr>
             <h4>添加一个品牌</h4>
             <div class="drawerBox">
-              <span>品牌名称</span><input type="text" placeholder="中文名" v-model="inputVal11"><input type="text" placeholder="英文名" v-model="inputVal12">
+              <span>品牌名称</span>
+              <input type="text" placeholder="中文名" v-model="inputValCn">
+              <input type="text" placeholder="英文名" v-model="inputValEn">
               <button class="nbutton" @click="addBrand()">提交</button>
-              <button class="nbutton" @click="clear1()">重置</button>
+              <button class="nbutton" @click="clearBrand()">重置</button>
             </div>
             <div :class="isSuccess ? 'success':'fail'">{{messageBox1}}</div>
-            <hr/>
+            <hr>
             <h4>添加一个手机</h4>
             <div class="drawerBox">
               <span>手机品牌</span>
-              <input type="text" v-model="inputVal2">
+              <select class="dSelect" style="textalign:center" @change="getBrand2($event)">
+                <option
+                  v-for="(item,index) in brandList"
+                  :key="index"
+                  :value="item.brandNum"
+                >{{item.displayName}}</option>
+              </select>
             </div>
             <div class="drawerBox">
               <span>手机型号</span>
-              <input type="text" v-model="inputVal3">
+              <input type="text" v-model="inputValMo">
             </div>
             <div class="drawerBox">
-              <span>安卓版本</span>
-              <input type="text" v-model="inputVal4">
+              <span>安卓系统</span>
+              <input type="text" v-model="inputValAve">
             </div>
+            <div class="drawerBox">
+              <span>厂商系统</span>
+              <input type="text" v-model="inputValVve">
+            </div>
+            <div class="drawerBox">
+              <span>ROOT没</span>
+              <input type="text" v-model="inputValRo" placeholder="root了填 已root 没root填 未root">
+            </div>
+            <div :class="isSuccess ? 'success':'fail'">{{messageBox2}}</div>
             <div>
-              <button class="nbutton" style="height:36px;">提交</button>
-              <button class="nbutton" style="height:36px;" @click="clear234()">重置</button>
+              <button class="nbutton" style="height:36px;" @click="addPhone()">提交</button>
+              <button class="nbutton" style="height:36px;" @click="clearPhone()">重置</button>
             </div>
           </el-drawer>
         </div>
         <form>
           <select style="textalign:center" @change="getBrand($event)">
             <option
-              v-for="(item,index) in brandData"
+              v-for="(item,index) in brandList"
               :key="index"
-              :value="item.brandName"
+              :value="item.brandNum"
             >{{item.displayName}}</option>
           </select>
           <Button class="button" type="button" style="width:99%" @click="tolName()">查看该品牌手机情况</Button>
         </form>
-        <div class="fa">
+        <div class="table_area">
           <table class="tbe">
             <tr>
               <th v-for="(item, index) in phoneList" :key="index">{{item}}</th>
@@ -96,13 +113,18 @@ export default {
   },
   data() {
     return {
-      messageBox1:"",
+      selectVal1: "0",
+      brandList: [],
+      messageBox1: "",
+      messageBox2: "",
       isSuccess: true,
-      inputVal11:"",
-      inputVal12:"",
-      inputVal2:"",
-      inputVal3:"",
-      inputVal4:"",
+      inputValCn: "",
+      inputValEn: "",
+      selectVal: "",
+      inputValMo: "",
+      inputValVve: "",
+      inputValAve: "",
+      inputValRo: "",
       drawer: false,
       isShow: false,
       alldata: {},
@@ -116,53 +138,17 @@ export default {
         "查看详情",
         "更新数据"
       ],
-      huaweiList: [],
-      oppoList: [],
-      vivoList: [],
-      googleList: [],
-      nokiaList: [],
-      meizuList: [],
-      samsungList: [],
       allList: [],
-      xiaomiList: [],
-      brandData: [],
       brandNum: 0
     };
   },
   methods: {
     // 获取当前选项的value值
     getBrand(e) {
-      let val = e.target.value;
-      this.brandName = val;
-      switch (val) {
-        case "huaweiList":
-          this.brandNum = 0;
-          break;
-        case "vivoList":
-          this.brandNum = 1;
-          break;
-        case "xiaomiList":
-          this.brandNum = 2;
-          break;
-        case "oppoList":
-          this.brandNum = 3;
-          break;
-        case "googleList":
-          this.brandNum = 4;
-          break;
-        case "nokiaList":
-          this.brandNum = 5;
-          break;
-        case "meizuList":
-          this.brandNum = 6;
-          break;
-        case "samsungList":
-          this.brandNum = 7;
-          break;
-        // default:
-        //   break;
-      }
-      // console.log(this.brandNum);
+      this.brandNum = e.target.value;
+    },
+    getBrand2(e) {
+      this.selectVal1 = e.target.value;
     },
     // 渲染所选列表数据
     tolName(index) {
@@ -173,6 +159,8 @@ export default {
         type: "success"
       });
       this.currentList = this.allList[this.brandNum];
+      this.brandName = this.brandList[this.brandNum].brandName;
+
     },
     // changeShow(){
     //   this.isShow = !this.isShow
@@ -197,92 +185,117 @@ export default {
         }
       });
     },
-    clear1(){
-      this.inputVal11 = "";
-      this.inputVal12 = "";
+    dataDel(data) {
+      let listArr = [];
+      data.forEach((value, index) => {
+        let obj = [];
+        // 对data中的每个元素拿来和listArr中已有的数组项做对比
+        for (let i = 0; i < listArr.length; i++) {
+          if (value.brand == listArr[i][0].brand) {
+            listArr[i].push(value);
+            return;
+          }
+        }
+        obj.push(value);
+        listArr.push(obj);
+      });
+      return listArr;
     },
-    clear234(){
-      this.inputVal2 = "";
-      this.inputVal3 = "";
-      this.inputVal4 = "";
+    clearBrand() {
+      this.inputValCn = "";
+      this.inputValEn = "";
     },
-    addBrand(){
-      if(!this.inputVal11 || !this.inputVal12){
+    clearPhone() {
+      this.selectVal1 = "huawei";
+      this.inputValMo = "";
+      this.inputValVve = "";
+      this.inputValAve = "";
+      this.inputValRo = "";
+    },
+    addBrand() {
+      if (!this.inputValCn || !this.inputValEn) {
         this.messageBox1 = "请输入品牌名称！";
         this.isSuccess = false;
-        return
+        return;
       }
       let data = {
-        brandName: this.inputVal12 + "List",
-        brand: this.inputVal12,
-        brandNum: this.brandData.length,
-        displayName: this.inputVal11,
-      }
-      this.$axios.post("http://172.16.10.124:3000/addBrand", data).then(res =>{
-        if(res.data == "ok"){
-          this.messageBox1 = "添加成功！";
+        brandName: "otherList",
+        brand: this.inputValEn,
+        brandNum: this.brandList.length,
+        displayName: this.inputValCn
+      };
+      this.$axios.post("http://172.16.10.124:3000/addBrand", data).then(res => {
+        if (res.data == "ok") {
+          this.messageBox1 = "添加成功,请立即为新品牌添加一部手机！！";
           this.isSuccess = true;
+          this.brandList.push(data);
+          let obj = [];
+          this.allList.push(obj);
+          // console.log(this.brandList);
+        }else{
+            this.messageBox2 = res.data;
+            this.isSuccess = false;          
         }
+        setTimeout(()=>{
+          this.messageBox1 = "";
+        }, 8000);
       });
+    },
+    addPhone() {
+      if (!this.selectVal1 || !this.inputValMo || !this.inputValAve || !this.inputValVve || !this.inputValRo) {
+        this.messageBox2 = "手机相关信息不得为空！";
+        this.isSuccess = false;
+        console.log(1);
+        return;
+      } else if (typeof parseInt(this.inputValAve) === "number" && isNaN(parseInt(this.inputValAve))) {
+        this.messageBox2 = "手机版本号得填数字！";
+        this.isSuccess = false;
+        return;
+      } else {
+        let num = this.selectVal1;
+        let nowNum = this.allList[num].length + 1;
+        console.log(nowNum);
+        let lastNum = nowNum > 9 ? nowNum : "0" + nowNum;
+        let id = parseInt("1" + num + lastNum);
+        let data = {
+          id: id,
+          model : this.inputValMo,
+          Android_version : this.inputValAve,
+          Vendor_version : this.inputValVve,
+          isRoot : this.inputValRo,
+          brand : this.brandList[num].brand
+        };
+        // console.log(data);
+
+        this.$axios.post("http://172.16.10.124:3000/addPhone", data).then(res => {
+          if (res.data == "ok"){
+            this.messageBox2 = "添加新手机成功，已经自动创建空模板！";
+            this.isSuccess = true;
+            this.allList[num].push(data);
+          }else{
+            this.messageBox2 = res.data;
+            this.isSuccess = false;
+            
+            
+          }
+          setTimeout(()=>{
+            this.messageBox2 = "";
+          }, 8000);
+        })
+
+      }
     }
   },
   mounted() {
     // 拿到手机各品牌设备数据
     this.$axios.get("http://172.16.10.124:3000/phoneList").then(res => {
-      this.alldata = res.data;
-      // console.log(res.data);
-      for (var i = 0; i < res.data.length; i++) {
-        if (this.alldata[i].brand == "huawei") {
-          let lh = this.alldata[i];
-
-          this.huaweiList.push(lh);
-
-          // console.log(this.huaweiList)
-        } else if (this.alldata[i].brand == "oppo") {
-          let lo = this.alldata[i];
-
-          this.oppoList.push(lo);
-        } else if (this.alldata[i].brand == "xiaomi") {
-          let lx = this.alldata[i];
-
-          this.xiaomiList.push(lx);
-        } else if (this.alldata[i].brand == "vivo") {
-          let lv = this.alldata[i];
-
-          this.vivoList.push(lv);
-        } else if (this.alldata[i].brand == "google") {
-          let lg = this.alldata[i];
-
-          this.googleList.push(lg);
-        } else if (this.alldata[i].brand == "nokia") {
-          let ln = this.alldata[i];
-
-          this.nokiaList.push(ln);
-        } else if (this.alldata[i].brand == "meizu") {
-          let lm = this.alldata[i];
-
-          this.meizuList.push(lm);
-        } else if (this.alldata[i].brand == "samsung") {
-          let ls = this.alldata[i];
-
-          this.samsungList.push(ls);
-        }
-      }
-      this.allList.push(
-        this.huaweiList,
-        this.vivoList,
-        this.xiaomiList,
-        this.oppoList,
-        this.googleList,
-        this.nokiaList,
-        this.meizuList,
-        this.samsungList
-      );
-      this.currentList = this.huaweiList;
+      this.allList = this.dataDel(res.data);
+      this.currentList = this.allList[0];
+      console.log(this.allList[0])
     });
 
     this.$axios.get("http://172.16.10.124:3000/brandList").then(res => {
-      this.brandData = res.data;
+      this.brandList = res.data;
     });
   }
 };
@@ -316,7 +329,7 @@ option {
   background: #337ab7;
   color: white;
 }
-.fa {
+.table_area {
   max-height: 780px;
   overflow: auto;
   width: 100%;
@@ -414,20 +427,26 @@ h3 {
 .drawerBox {
   display: flex;
 }
-.drawerBox h3,h4,span {
+.drawerBox h3,
+h4,
+span {
   margin: 5px;
 }
-.drawerBox input {
+.drawerBox input,
+select {
   flex: 1;
   margin: 5px;
 }
-hr{
+hr {
   border: 1 dashed;
 }
-.success{
+.success {
   color: #33cc33;
 }
-.fail{
+.fail {
   color: red;
+}
+.dSelect {
+  padding: 0 36%;
 }
 </style>

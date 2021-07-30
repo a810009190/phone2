@@ -123,9 +123,7 @@ export default {
         vivoList: ["androidIntelligent", "androidvivoexchange"],
         xiaomiList: ["androidIntelligent", "androidxiaomiexchange"],
         oppoList: ["androidIntelligent", "androidoppoexchange"],
-        googleList: ["androidIntelligent"],
-        nokiaList: ["androidIntelligent"],
-        meizuList: ["androidIntelligent"],
+        otherList: ["androidIntelligent"],
         samsungList: ["androidIntelligent", "androidsamsungexchange"]
       },
       basicList: [],
@@ -251,6 +249,8 @@ export default {
     },
     // 切换任务
     refresh() {
+      this.currentSort = 0;
+      this.currentList = this.basicList;
       this.$axios
         .get(
           "http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId

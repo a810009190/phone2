@@ -95,9 +95,7 @@ export default {
         vivoList: ["androidIntelligent", "androidvivoexchange"],
         xiaomiList: ["androidIntelligent", "androidxiaomiexchange"],
         oppoList: ["androidIntelligent", "androidoppoexchange"],
-        googleList: ["androidIntelligent"],
-        nokiaList: ["androidIntelligent"],
-        meizuList: ["androidIntelligent"],
+        otherList: ["androidIntelligent"],
         samsungList: ["androidIntelligent", "androidsamsungexchange"]
       },
       basicList: [],
@@ -118,6 +116,7 @@ export default {
     this.name = this.$route.query.model;
     this.ctaskList = this.brandTask[this.$route.query.brandName];
     // console.log(this.ctaskList);
+    // console.log(this.$route.query.brandName);
     this.$axios
       // .get("/data/huawei/" + this.$route.params.id + ".json")
       .get("http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId)
@@ -159,7 +158,7 @@ export default {
     // 根据所选任务改变任务项
     changeTask(e) {
       let val = e.target.value;
-      console.log(val);
+      // console.log(val);
       if (val == "androidIntelligent") {
         this.taskId = "a";
       } else if (val == "androidhuaweiclone") {
@@ -170,6 +169,9 @@ export default {
       // console.log(this.taskId);
     },
     refresh() {
+      this.currentSort = 0;
+      this.currentList = this.basicList;
+      // console.log(this.currentSort);
       this.$axios
         .get(
           "http://172.16.10.124:3000/r" + this.$route.params.id + this.taskId
@@ -183,7 +185,6 @@ export default {
         message: "切换成功",
         type: "success"
       });
-      this.currentList = this.allList[this.brandNum];
     },
     dataScreen(data) {
       this.basicList = data.filter(item => item.class == "basic");
