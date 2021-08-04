@@ -3,10 +3,11 @@
     <div class="container">
       <div class="panel">
         <div class="header">
-          <h2>
+          <h3>
+            <span class="set" @click="setVersion()">设置</span>
             {{name}}修改页
             <span class="return" @click="back()">返回</span>
-          </h2>
+          </h3>
         </div>
         <!-- <div class="navBar">
           <ul class="headMenu">
@@ -83,6 +84,7 @@ export default {
   name: "modify",
   data() {
     return {
+      defaultVersion: "",
       changeColor: "normal",
       seVal: [],
       inputVal: [],
@@ -189,7 +191,7 @@ export default {
     clearSelect(index) {
       this.selectValue = this.seVal[index];
       // console.log(this.selectValue);
-      console.log(this.seVal[index]);
+      // console.log(this.seVal[index]);
     },
     // 清空输入框，拿到输入框内容
     clearInput(index) {
@@ -203,8 +205,10 @@ export default {
         });
         return;
       }
-      if (!this.inputValue) {
+      if (!this.defaultVersion && !this.inputValue) {
         this.inputValue = "V3.10.1";
+      }else if(!this.inputValue){
+        this.inputValue = this.defaultVersion;
       }
 
       let data = {
@@ -284,6 +288,27 @@ export default {
     delCss(val){
       let css = val == 0 ? 'fail' : (val == 1 ? 'success' : 'normal');
       return css;
+    },
+    setVersion(){
+      this.$prompt('请设置当前统计默认的软件版本号','设置',{
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+
+      }).then(({value}) => {
+        this.defaultVersion = value;
+        console.log(this.defaultVersion);
+        this.$message({
+          type: 'success',
+          message: '您设置的当前默认版本号为' + value
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        })
+      })
+      
+      
     }
   },
   filters: {
@@ -369,12 +394,17 @@ aside ul li:hover {
   overflow: auto;
   width: 100%;
 }
-h2 {
+h3 {
   position: relative;
+  padding-top: 20px !important;
 }
 .return {
   position: absolute;
   right: 0;
+}
+.set{
+  position: absolute;
+  left: 0;
 }
 select {
   width: auto;
