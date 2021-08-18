@@ -145,6 +145,8 @@ export default {
   mounted() {
     this.name = this.$route.query.model;
     this.ctaskList = this.brandTask[this.$route.query.brandName];
+    this.defaultVersion = this.$cookies.get("defaultVersion");
+    console.log(this.defaultVersion);
     // console.log(this.ctaskList);
     this.$axios
       // .get("/data/huawei/" + this.$route.params.id + ".json")
@@ -251,6 +253,16 @@ export default {
       }
       // console.log(this.taskId);
     },
+    // 排序方法，暂时未完成
+    sortList(L,val){
+      return L.sort((a,b)=>{
+        let x = a.name.toLowerCase();
+        let y = b.name.toLowerCase();
+        if(x < y){return -1;}
+        if(x > y){return 1;}
+        return 0;
+      });
+    },
     // 切换任务
     refresh() {
       this.currentSort = 0;
@@ -296,10 +308,12 @@ export default {
 
       }).then(({value}) => {
         this.defaultVersion = value;
+        this.$cookies.set('defaultVersion', this.defaultVersion);
         console.log(this.defaultVersion);
         this.$message({
           type: 'success',
           message: '您设置的当前默认版本号为' + value
+          
         });
       }).catch(() => {
         this.$message({
