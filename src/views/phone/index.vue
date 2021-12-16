@@ -1,5 +1,8 @@
 <template>
   <div id="box">
+    <keep-alive>
+      <Header></Header>
+    </keep-alive>
     <!-- <el-alert 
     type="success"
     show-icon
@@ -31,7 +34,7 @@
             <h4>添加一个手机</h4>
             <div class="drawerBox">
               <span>手机品牌</span>
-              <select class="dSelect" style="textalign:center" @change="getBrand2($event)">
+              <select class="dSelect" style="text-align:center" @change="getBrand2($event)">
                 <option
                   v-for="(item,index) in brandList"
                   :key="index"
@@ -63,13 +66,22 @@
           </el-drawer>
         </div>
         <form>
-          <select style="textalign:center" @change="getBrand($event)">
+          <!-- <select style="textalign:center" @change="getBrand($event)">
             <option
               v-for="(item,index) in brandList"
               :key="index"
               :value="item.brandNum"
             >{{item.displayName}}</option>
-          </select>
+          </select> -->
+          <el-select v-model='value' placeholder="请选择" @change="getBrand()" :popper-append-to-body="false">
+            <el-option
+            v-for='item in brandList'
+            :key='item.brandNum'
+            :label='item.displayName'
+            :value="`${item.brandNum}|${item.displayName}`"
+            >
+            </el-option>
+          </el-select>
           <Button class="button" type="button" style="width:99%" @click="tolName()">查看该品牌手机情况</Button>
         </form>
         <div class="table_area">
@@ -113,6 +125,7 @@ export default {
   },
   data() {
     return {
+      url: this.Common.g_url,
       selectVal1: "0",
       brandList: [],
       messageBox1: "",
@@ -139,13 +152,19 @@ export default {
         "更新数据"
       ],
       allList: [],
-      brandNum: 0
+      brandNum: 0,
+      value:'0|华为',
+      label:'华为'
     };
   },
   methods: {
     // 获取当前选项的value值
-    getBrand(e) {
-      this.brandNum = e.target.value;
+    getBrand() {
+      // value是当前列表中的编号，label是品牌中文名
+      let [value,label] = this.value.split('|');
+      this.brandNum = value;
+      console.log("切换品牌后 品牌序号"+this.brandNum);
+      this.label = label;
     },
     getBrand2(e) {
       this.selectVal1 = e.target.value;
@@ -158,16 +177,26 @@ export default {
         message: "切换成功",
         type: "success"
       });
-      this.currentList = this.allList[this.brandNum];
+      
+      // 记住当前选择的品牌，把他们存在cookie里
+      this.$cookies.set('brandNum',this.brandNum);
       this.brandName = this.brandList[this.brandNum].brandName;
-
+      this.$cookies.set('label',this.label);
+      this.currentList = this.allList[this.brandNum];
     },
     // changeShow(){
     //   this.isShow = !this.isShow
     // },
     // 查看详情按钮点击跳转并传参
     handleToDetail(id, model) {
-      console.log(id);
+      let cookieNum = this.$cookies.get("brandNum");
+      if(cookieNum){
+        this.brandName = this.brandList[cookieNum].brandName;
+      }else{
+        this.brandName = "huaweiList";
+      }
+      
+      console.log('查看详情'+id);
       this.$router.push({
         path: "/detail/" + id,
         query: {
@@ -177,6 +206,13 @@ export default {
       });
     },
     handleToModify(id, model) {
+      let cookieNum = this.$cookies.get("brandNum");
+      if(cookieNum){
+        this.brandName = this.brandList[cookieNum].brandName;
+      }else{
+        this.brandName = "huaweiList";
+      }
+      console.log("更新数据"+id+"手机"+model);
       this.$router.push({
         path: "/modify/" + id,
         query: {
@@ -224,7 +260,7 @@ export default {
         brandNum: this.brandList.length,
         displayName: this.inputValCn
       };
-      this.$axios.post("http://172.16.10.124:3000/addBrand", data).then(res => {
+      this.$axios.post(this.url + "/addBrand", data).then(res => {
         if (res.data == "ok") {
           this.messageBox1 = "添加成功,请立即为新品牌添加一部手机！！";
           this.isSuccess = true;
@@ -267,7 +303,7 @@ export default {
         };
         // console.log(data);
 
-        this.$axios.post("http://172.16.10.124:3000/addPhone", data).then(res => {
+        this.$axios.post(this.url + "/addPhone", data).then(res => {
           if (res.data == "ok"){
             this.messageBox2 = "添加新手机成功，已经自动创建空模板！";
             this.isSuccess = true;
@@ -288,24 +324,50 @@ export default {
   },
   mounted() {
     // 拿到手机各品牌设备数据
-    this.$axios.get("http://172.16.10.124:3000/phoneList").then(res => {
+    this.$axios.get(this.url+"/phoneList").then(res => {
       this.allList = this.dataDel(res.data);
-      this.currentList = this.allList[0];
-      console.log(this.allList[0])
+      let cookieNum = this.$cookies.get("brandNum");
+      console.log("cookie有？"+cookieNum)
+      let label = this.$cookies.get("label");
+      if(cookieNum && label){
+        this.currentList = this.allList[cookieNum];
+        this.label = label;
+        this.value=cookieNum+'|'+this.label;
+        this.brandNum = cookieNum;
+        console.log(this.currentList);
+      }else{
+        this.currentList = this.allList[0];
+        this.value='0|华为';
+      }
+      console.log('初始化所有列表：');
+      console.log(this.allList[0]);
     });
 
-    this.$axios.get("http://172.16.10.124:3000/brandList").then(res => {
+    this.$axios.get(this.url+"/brandList").then(res => {
       this.brandList = res.data;
+      console.log('初始化品牌列表：');
+      console.log(this.brandList);
     });
   }
 };
 </script>
-<style>
-select {
-  width: auto;
+<style scoped>
+.el-select {
+  width: 90%;
   margin: 0;
-  padding: 0 45%;
+  padding: 0;
 }
+select /deep/.el-select-dropdown__item
+{
+  text-align: center !important;
+}
+
+/deep/.el-input__inner
+{
+  text-align: center !important;
+}
+
+
 option {
   position: absolute;
   left: 50%;
@@ -400,11 +462,11 @@ table tr:hover {
   border-radius: 4px;
   margin: 2px;
 }
-select {
+.el-select {
   margin: 6px;
   appearance: normal;
 }
-select option {
+.el-select option {
   text-align: center;
 }
 h3 {
@@ -420,6 +482,7 @@ h3 {
 .return {
   position: absolute;
   right: 0;
+  color: white;
 }
 .el-drawer {
   color: black !important;
@@ -431,6 +494,7 @@ h3 {
 h4,
 span {
   margin: 5px;
+  color: black;
 }
 .drawerBox input,
 select {

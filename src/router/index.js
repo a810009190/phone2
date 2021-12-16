@@ -2,9 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import PhoneRouter from '../views/phone'
 import DetailRouter from '../views/detail'
-import SearchRouter from '../views/search'
+import SendMessengeRouter from '../views/sendMessenge'
 import ModifyRouter from '../views/modify'
-
+import ReportRouter from '../views/report'
 Vue.use(Router)
 
 export default new Router({
@@ -17,14 +17,24 @@ export default new Router({
       component: PhoneRouter
     },
     {
+      path: '/report',
+      name: 'report',
+      component: ReportRouter
+    },
+    {
       path: '/detail/:id',
       name: 'detail',
       component: DetailRouter
     },
+    // {
+    //   path: '/search',
+    //   name: 'search',
+    //   component: SearchRouter
+    // },
     {
-      path: '/search',
-      name: 'search',
-      component: SearchRouter
+      path: '/sendMessenge',
+      name: 'sendMessenge',
+      component: SendMessengeRouter
     },
     {
       path: '/modify/:id',

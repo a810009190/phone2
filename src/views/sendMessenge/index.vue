@@ -58,6 +58,7 @@ export default {
   },
   data() {
     return {
+      url: this.Common.g_url,
       isshow: false
     };
   },
@@ -68,7 +69,7 @@ export default {
       var self = this;
 
       this.$axios
-        .get("http://172.16.10.186:3333/sendmessenge")
+        .get(this.url+"/sendmessenge")
         .then(function(res) {
           console.log(res.data);
           if (res.data == "0") {
@@ -271,4 +272,3 @@ img {
   height: 20%;
 }
 </style>
-
