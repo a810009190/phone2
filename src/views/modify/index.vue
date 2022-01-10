@@ -27,8 +27,8 @@
             <li v-for="(item,index) in taskList" :key="index" @click="changeIndex(index)" :class="{'active': currentSort == index}">{{item}}</li>
           </ul>
         </aside>
-
-        <el-table :data="currentList.filter(data => !search || data.displayName.toLowerCase().includes(search.toLowerCase()))" max-height="730px" border style="width: 100%" :default-sort="{prop: 'displayName',order:'descending'}">
+        <!-- 添加 默认排序 在el-table加这个属性  :default-sort="{prop: 'displayName',order:'descending'}" -->
+        <el-table :data="currentList.filter(data => !search || data.displayName.toLowerCase().includes(search.toLowerCase()))" max-height="730px" border style="width: 100%" >
           <!-- <el-table-column v-for='(item,index) in tableList' :key=index
             :label="item"
             min-width="10%"
@@ -213,13 +213,18 @@
           this.inputValue = this.defaultVersion;
         }
 
+        if (!this.inputValue1){
+          this.inputValue1 = "无";
+        }
+
         let data = {
           taskId: id,
           phoneId: this.$route.params.id + this.taskId,
           isSuccess: this.selectValue,
           Vendor_version: this.inputValue,
-          remark: this.inputVal1
+          remark: this.inputValue1
         };
+        console.log(data)
         this.$axios.post(this.url + "/modify", data);
 
         let newArr = this.currentList;
